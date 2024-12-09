@@ -1,4 +1,154 @@
 
+<div class="w-full px-8 py-3">
 
-<h2 class="font-medium">Listado</h2>
+    <h2 class="font-bold">Listado:</h2>
 
+    <div class="flex justify-content-end mb-3">
+        <p-button (click)="showDialog()" label="Agregar" />
+    </div>
+
+    <div class="card">
+        <p-dataView #dv [value]="items" [layout]="'list'">
+
+                <ng-template pTemplate="header">
+                    <div class="flex justify-content-end">
+                        <p-dataViewLayoutOptions />
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="list" let-items>
+                    <div class="grid grid-nogutter">
+                        <div class="col-12" *ngFor="let item of items; let first = first" class="col-12">
+                            <div class="flex flex-column sm:flex-row sm:align-items-center p-4 gap-3" [ngClass]="{ 'border-top-1 surface-border': !first }">
+
+                                <!-- Imagen -->
+                                <div class="md:w-10rem relative">
+                                    <img class="block xl:block mx-auto border-round w-full" [src]="item.staticUrl" [alt]="item.name" />
+                                    <p-tag [value]="'Activo'" [severity]="'success'" class="absolute" [style.left.px]="4" [style.top.px]="4" />
+                                </div>
+                                
+                                <!-- Detalles -->
+                                <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1 gap-4">
+                                    <div class="flex flex-row md:flex-column justify-content-between align-items-start gap-2">
+                                        <div>
+                                            <span class="font-medium text-secondary text-sm">{{ item.imageName }}</span>
+                                            <div class="text-lg font-medium text-900 mt-2">{{ item.name }}</div>
+                                        </div>
+                                        <!-- Rating -->
+                                        <!-- <div class="surface-100 p-1" style="border-radius: 30px">
+                                            <div class="surface-0 flex align-items-center gap-2 justify-content-center py-1 px-2" style="border-radius: 30px; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.04), 0px 1px 2px 0px rgba(0, 0, 0, 0.06)">
+                                                <span class="text-900 font-medium text-sm">{{ item.rating }}</span>
+                                                <i class="pi pi-star-fill text-yellow-500"></i>
+                                            </div>
+                                        </div> -->
+                                    </div>
+
+                                    <!-- Botones -->
+                                    <div class="flex flex-column md:align-items-end gap-5">
+                                        <!-- <span class="text-xl font-semibold text-900">{{ '$' + item.price }}</span> -->
+                                        <div class="flex flex-row-reverse md:flex-row gap-2">
+                                            <!-- <p-button icon="pi pi-trash" [outlined]="true" severity="danger" /> -->
+                                            <p-toast />
+                                            <p-confirmPopup />
+                                            <p-button (onClick)="confirm2($event)" label="Eliminar" severity="danger" [outlined]="true" />
+                                            <p-button
+                                                (onClick)="editar(item.id)" 
+                                                icon="pi pi-pencil" 
+                                                class="flex-auto md:flex-initial white-space-nowrap" 
+                                                label="Editar" 
+                                                severity="warning" />
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+
+
+
+                <ng-template let-item pTemplate="grid" let-items>
+                    <div class="grid grid-nogutter">
+                        <div class="col-12 sm:col-6 md:col-4 xl:col-6 p-2" *ngFor="let item of items">
+                            <div class="p-4 border-1 surface-border surface-card border-round flex flex-column">
+                                <div class="surface-50 flex justify-content-center border-round p-3">
+
+                                    <!-- Imagen -->
+                                    <div class="relative mx-auto">
+                                        <!-- <p-tag [value]="'Activo'" [severity]="'success'"></p-tag> -->
+                                        <img class="border-round w-full" [src]="item.staticUrl" [alt]="item.name" style="max-width: 300px;" />
+                                    </div>
+
+                                </div>
+
+                                <div class="pt-4">
+                                    <div class="flex flex-row justify-content-between align-items-start gap-2">
+
+                                        <!-- Detalles -->
+                                        <div>
+                                            <span class="font-medium text-secondary text-sm">{{ item.imageName }}</span>
+                                            <div class="text-lg font-medium text-900 mt-1">{{ item.name }}</div>
+                                        </div>
+
+                                        <!-- Rating -->
+                                        <!-- <div class="surface-100 p-1" style="border-radius: 30px">
+                                            <div class="surface-0 flex align-items-center gap-2 justify-content-center py-1 px-2" style="border-radius: 30px; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.04), 0px 1px 2px 0px rgba(0, 0, 0, 0.06)">
+                                                <span class="text-900 font-medium text-sm">{{ item.rating }}</span>
+                                                <i class="pi pi-star-fill text-yellow-500"></i>
+                                            </div>
+                                        </div> -->
+
+                                    </div>
+                                    <div class="flex flex-column gap-4 mt-4">
+                                        <!-- <span class="text-2xl font-semibold">{{ '$' + item.price }}</span> -->
+                                        <div class="flex gap-2">
+                                            <p-button icon="pi pi-trash" [outlined]="true" severity="danger" />
+                                            <p-button 
+                                                (click)="editar(item.id)"
+                                                icon="pi pi-pencil" 
+                                                class="flex-auto md:flex-initial white-space-nowrap" 
+                                                label="Editar" 
+                                                severity="warning" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+        </p-dataView>
+    </div>
+
+</div>
+
+
+<div class="card flex justify-center">
+
+    <p-dialog [header]="isUpdating ? 'Editar' : 'Agregar'" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
+        <span class="p-text-secondary block mb-8">{{ isUpdating ? 'Edita' : 'Agrega'}} los datos correspondientes.</span>
+        <div class="flex flex-column gap-4 mb-4">
+            <label for="name" class="font-semibold w-24">Nombre del elemento:</label>
+            <input pInputText id="name" class="flex-auto" autocomplete="off" />
+        </div>
+        <div class="flex items-center gap-4 mb-8">
+            <div class="card flex justify-content-center">
+                <p-toast />
+                <p-fileUpload 
+                    mode="basic" 
+                    chooseLabel="Choose" 
+                    chooseIcon="pi pi-upload"
+                    name="file" 
+                    url="https://www.primefaces.org/cdn/api/upload.php" 
+                    accept="image/*" 
+                    maxFileSize="1000" 
+                    (onUpload)="onUpload($event)" />
+            </div>
+        </div>
+        <div class="flex justify-end gap-2">
+            <p-button label="Cancelar" severity="secondary" (click)="visible = false" />
+            <p-button [label]="isUpdating ? 'Actualizar' : 'Agregar'" (click)="visible = false" />
+        </div>
+    </p-dialog>
+
+</div>
