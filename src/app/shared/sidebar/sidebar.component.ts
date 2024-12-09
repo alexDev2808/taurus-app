@@ -4,6 +4,7 @@ import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { AvatarModule } from 'primeng/avatar';
 import { StyleClassModule } from 'primeng/styleclass';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'shared-sidebar',
@@ -13,7 +14,8 @@ import { StyleClassModule } from 'primeng/styleclass';
     ButtonModule,
     RippleModule,
     AvatarModule,
-    StyleClassModule
+    StyleClassModule,
+    RouterLink
   ],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss'
