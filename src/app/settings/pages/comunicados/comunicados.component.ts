@@ -15,6 +15,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { Item } from '../../../interfaces/Item';
 
 @Component({
   selector: 'app-comunicados',
@@ -100,6 +101,13 @@ export class ComunicadosComponent implements OnInit {
   editar(id: string ) {
     this.isUpdating = true
     this.showDialog()
+    
+    this.uploadsService.findOne( id ).subscribe({
+      next: ( res ) => {
+        this.formData.name = res.name
+        
+      }
+    })
     
   }
 

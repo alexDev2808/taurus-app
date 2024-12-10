@@ -22,8 +22,8 @@ export class UploadService {
     return this.httpClient.post(`${this.apiURL}/uploads`, item )
   }
 
-  findOne( id: string ) {
-    return this.httpClient.get(`${this.apiURL}/uploads/${ id }`)
+  findOne( id: string ): Observable<Item> {
+    return this.httpClient.get<Item>(`${this.apiURL}/uploads/${ id }`)
   }
 
   deleteUpload( id: string ) {
