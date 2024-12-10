@@ -13,16 +13,14 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-comunicados',
   standalone: true,
   imports: [
     CommonModule,
-    HttpClientModule,
     FormsModule,
     RouterModule,
     DataViewModule,
@@ -45,61 +43,54 @@ import { Router, RouterModule } from '@angular/router';
 
 export class ComunicadosComponent implements OnInit {
 
-  layout: string = 'list';
   items: Upload[] = []
   visible: boolean = false;
   isUpdating: boolean = false;
+  selectedFile: File | null = null
   formData = {
     name: ''
   }
-  selectedFile: File | null = null
 
   constructor( 
     private uploadsService: UploadService,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService,
-    private http: HttpClient,
-    private router: Router
+    private confirmationService: ConfirmationService
    ) {}
 
   ngOnInit(): void {
+    this.getData()
+  }
+
+  getData() {
     this.uploadsService.getAllUploads().subscribe( data => {
       this.items = data
     })
   }
+
   onFileSelected(event: Event): void {
     const fileInput = event.target as HTMLInputElement;
     if (fileInput.files && fileInput.files.length > 0) {
       this.selectedFile = fileInput.files[0];
     }
   }
-  onSubmit(event: Event): void {
-    // event.preventDefault();
-    if (!this.selectedFile) return;
-    console.log('Submit');
-    
 
+  onSubmit(event: Event): void {
+    if (!this.selectedFile) return;
+    
     const formData = new FormData();
     formData.append('name', this.formData.name);
     formData.append('file', this.selectedFile);
 
-    this.http.post('http://localhost:3000/api/uploads', formData).subscribe({
+    this.uploadsService.createUpload( formData ).subscribe( {
       next: (response) => {
-        console.log('Formulario enviado con éxito', response)
         this.visible = false
-        this.uploadsService.getAllUploads().subscribe( data => {
-          this.items = data
-        })
+        this.getData()
         this.formData.name = ''
         this.selectedFile = null
       },
       error: (error) => console.error('Error al enviar el formulario', error),
-    });
-
+    })
     
-  }
-  redirect() {
-    this.router.navigate(['/settings']);
   }
 
   showDialog() {
@@ -112,24 +103,26 @@ export class ComunicadosComponent implements OnInit {
     
   }
 
-  onUpload(event: any) {
-    // this.messageService.add({ severity: 'info', summary: 'Success', detail: 'File Uploaded with Basic Mode' });
-    console.log(event);
-    
-}
 
-  getSeverity() {
-    return "success"
-};
-
-confirm2(event: Event) {
+confirm2(event: Event, id: string ) {
   this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: '¿Confirmas la eliminación?',
       icon: 'pi pi-info-circle',
       acceptButtonStyleClass: 'p-button-danger p-button-sm',
       accept: () => {
+          this.uploadsService.deleteUpload( id )?.subscribe( {
+            next: ( res ) => {
+              console.log(res);
+              this.getData()
+            },
+            error: ( error ) => {
+              console.log(error);
+              this.getData()
+            }
+          })
           this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Elemento eliminado', life: 3000 });
+          this.getData()
       },
       reject: () => {
           this.messageService.add({ severity: 'error', summary: 'Cancelado', detail: 'Se cancelo la acción', life: 3000 });

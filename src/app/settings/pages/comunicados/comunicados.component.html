@@ -50,7 +50,7 @@
                                             <!-- <p-button icon="pi pi-trash" [outlined]="true" severity="danger" /> -->
                                             <p-toast />
                                             <p-confirmPopup />
-                                            <p-button (onClick)="confirm2($event)" label="Eliminar" severity="danger" [outlined]="true" />
+                                            <p-button (onClick)="confirm2($event, item.id )" label="Eliminar" severity="danger" [outlined]="true" />
                                             <p-button
                                                 (onClick)="editar(item.id)" 
                                                 icon="pi pi-pencil" 

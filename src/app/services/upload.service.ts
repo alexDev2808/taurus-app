@@ -18,8 +18,15 @@ export class UploadService {
     return this.httpClient.get<Upload[]>( url )
   }
 
-  createUpload( item: Item ) {
-    console.log(item);
-    // return this.httpClient.post<Item>(`${this.apiURL}/uploads`, item)
+  createUpload( item: FormData ) {
+    return this.httpClient.post(`${this.apiURL}/uploads`, item )
+  }
+
+  findOne( id: string ) {
+    return this.httpClient.get(`${this.apiURL}/uploads/${ id }`)
+  }
+
+  deleteUpload( id: string ) {
+    return this.httpClient.delete(`${this.apiURL}/uploads/${id}`) 
   }
 }
