@@ -13,12 +13,18 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-comunicados',
   standalone: true,
   imports: [
     CommonModule,
+    HttpClientModule,
+    FormsModule,
+    RouterModule,
     DataViewModule,
     TagModule,
     RatingModule,
@@ -43,17 +49,57 @@ export class ComunicadosComponent implements OnInit {
   items: Upload[] = []
   visible: boolean = false;
   isUpdating: boolean = false;
+  formData = {
+    name: ''
+  }
+  selectedFile: File | null = null
 
   constructor( 
     private uploadsService: UploadService,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private http: HttpClient,
+    private router: Router
    ) {}
 
   ngOnInit(): void {
     this.uploadsService.getAllUploads().subscribe( data => {
       this.items = data
     })
+  }
+  onFileSelected(event: Event): void {
+    const fileInput = event.target as HTMLInputElement;
+    if (fileInput.files && fileInput.files.length > 0) {
+      this.selectedFile = fileInput.files[0];
+    }
+  }
+  onSubmit(event: Event): void {
+    // event.preventDefault();
+    if (!this.selectedFile) return;
+    console.log('Submit');
+    
+
+    const formData = new FormData();
+    formData.append('name', this.formData.name);
+    formData.append('file', this.selectedFile);
+
+    this.http.post('http://localhost:3000/api/uploads', formData).subscribe({
+      next: (response) => {
+        console.log('Formulario enviado con éxito', response)
+        this.visible = false
+        this.uploadsService.getAllUploads().subscribe( data => {
+          this.items = data
+        })
+        this.formData.name = ''
+        this.selectedFile = null
+      },
+      error: (error) => console.error('Error al enviar el formulario', error),
+    });
+
+    
+  }
+  redirect() {
+    this.router.navigate(['/settings']);
   }
 
   showDialog() {

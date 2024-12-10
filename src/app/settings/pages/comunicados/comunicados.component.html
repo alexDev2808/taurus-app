@@ -126,29 +126,41 @@
 <div class="card flex justify-center">
 
     <p-dialog [header]="isUpdating ? 'Editar' : 'Agregar'" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
-        <span class="p-text-secondary block mb-8">{{ isUpdating ? 'Edita' : 'Agrega'}} los datos correspondientes.</span>
-        <div class="flex flex-column gap-4 mb-4">
-            <label for="name" class="font-semibold w-24">Nombre del elemento:</label>
-            <input pInputText id="name" class="flex-auto" autocomplete="off" />
-        </div>
-        <div class="flex items-center gap-4 mb-8">
-            <div class="card flex justify-content-center">
-                <p-toast />
-                <p-fileUpload 
-                    mode="basic" 
-                    chooseLabel="Choose" 
-                    chooseIcon="pi pi-upload"
-                    name="file" 
-                    url="https://www.primefaces.org/cdn/api/upload.php" 
-                    accept="image/*" 
-                    maxFileSize="1000" 
-                    (onUpload)="onUpload($event)" />
+        <span class="p-text-secondary block mb-1">{{ isUpdating ? 'Edita' : 'Agrega'}} los datos correspondientes.</span>
+
+        <form (submit)="onSubmit($event)" enctype="multipart/form-data">
+            <div class="flex flex-column gap-4 mb-4">
+                <label for="name" class="font-semibold w-24">Nombre del elemento:</label>
+                <input 
+                    pInputText 
+                    name="name" 
+                    [(ngModel)]="formData.name"
+                    required
+                    placeholder="Nombre del elemento"
+                    class="flex-auto" 
+                    autocomplete="off" />
             </div>
-        </div>
-        <div class="flex justify-end gap-2">
-            <p-button label="Cancelar" severity="secondary" (click)="visible = false" />
-            <p-button [label]="isUpdating ? 'Actualizar' : 'Agregar'" (click)="visible = false" />
-        </div>
+            <div class="flex items-center gap-4 mb-8">
+                <div class="card flex justify-content-center">
+                    <input 
+                        type="file"
+                        (change)="onFileSelected($event)"
+                        accept="image/*"
+                        required
+                        >
+                </div>
+            </div>
+            <div class="flex justify-end gap-2">
+                <p-button label="Cancelar" severity="secondary" (click)="visible = false" />
+                <p-button 
+                    type="submit"
+                    [disabled]="!selectedFile"
+                    [label]="isUpdating ? 'Actualizar' : 'Agregar'" 
+                    
+                    />
+            </div>
+        </form>
+
     </p-dialog>
 
 </div>
