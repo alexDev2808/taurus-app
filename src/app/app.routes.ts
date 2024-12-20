@@ -6,6 +6,10 @@ export const routes: Routes = [
         loadComponent: () => import('./home/home.component').then(m => m.HomeComponent)
     },
     {
+        path: 'sliders',
+        loadChildren: () => import('./sliders/sliders.module').then(m => m.SlidersModule)
+    },
+    {
         path: 'settings',
         loadChildren: () => import('./settings/settings.module').then(m => m.SettingsModule)
     },

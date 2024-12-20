@@ -1,0 +1,64 @@
+<div class="contenedor">
+    <div class="flex justify-content-center">
+      <button
+        [ngStyle]="{ display: !isPaused ? 'flex':'none'}"
+        #btnPausar
+        class="justify-content-center align-items-center p-1"
+        (click)="slickModal.slickPause()"
+        (click)="onPauseButton()"
+        >
+        <img src="../../../assets/icons/pause.svg" alt="Pause">
+      </button>
+      <button
+        [ngStyle]="{ display: isPaused ? 'flex':'none'}"
+        #btnPlay
+        class="justify-content-center align-items-center p-1"
+        (click)="slickModal.slickPlay()"
+        (click)="onPauseButton()"
+        >
+        <img src="../../../assets/icons/play.svg" alt="Play">
+      </button>
+      
+      <button
+        #btnNext
+        class="hidden"
+        (click)="slickModal.slickNext()"
+        >
+        >
+      </button>
+    </div>
+    
+    <div class="s-container">
+      <ngx-slick-carousel
+        class="carousel"
+        #slickModal="slick-carousel"
+        [config]="slideConfig"
+        (init)="slickInit($event)"
+        (breakpoint)="breakpoint($event)"
+        (beforeChange)="beforeChange($event)">
+          <div ngxSlickItem *ngFor="let slide of data" class="slide">
+            <img
+              *ngIf="slide.ext !== 'mp4'; else videoFormat"
+              src="../../../assets/img/{{ slide.item }}"
+              alt=""
+              width="100%"
+              >
+            <ng-template #videoFormat>
+              <video
+                #video
+                src="../../../assets/img/{{ slide.item }}"
+                controls
+                width="100%">
+              </video>
+            </ng-template>
+          </div>
+      </ngx-slick-carousel>
+    </div>
+  
+    <!-- @if( isLoading ){
+      <shared-loader></shared-loader>
+    } -->
+  
+  </div>
+
+
