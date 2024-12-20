@@ -3,13 +3,15 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { SlickCarouselModule } from 'ngx-slick-carousel';
 import { SliderItem } from '../../../interfaces/SliderItem';
 import { SliderService } from '../../../services/slider-service.service';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'component-carrusel',
   standalone: true,
   imports: [
     CommonModule,
-    SlickCarouselModule
+    SlickCarouselModule,
+    ButtonModule
   ],
   templateUrl: './carrusel.component.html',
   styleUrl: './carrusel.component.scss'
