@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { SlickCarouselModule } from 'ngx-slick-carousel';
-import { SliderItem } from '../../../interfaces/SliderItem';
-import { SliderService } from '../../../services/slider-service.service';
 import { ButtonModule } from 'primeng/button';
+import { UploadService } from '../../../services/upload.service';
+import { Upload } from '../../../interfaces/Upload';
+import { LoaderComponent } from '../../../shared/loader/loader.component';
 
 @Component({
   selector: 'component-carrusel',
@@ -11,7 +12,8 @@ import { ButtonModule } from 'primeng/button';
   imports: [
     CommonModule,
     SlickCarouselModule,
-    ButtonModule
+    ButtonModule,
+    LoaderComponent
   ],
   templateUrl: './carrusel.component.html',
   styleUrl: './carrusel.component.scss'
@@ -23,24 +25,26 @@ export class CarruselComponent {
   @ViewChild('btnPlay') btnPlay!: ElementRef;
   @ViewChild('btnNext') btnNext!: ElementRef;
 
-
+  public items: Upload[] = []
   public isPaused: boolean = true
   public isLoading: boolean = true
+  public heigthScreen: any
 
-  constructor( private slidesService: SliderService) {
-    this.setFileExtension()
-    setTimeout(() => {
-      this.isLoading = false
-    }, 5000)
-  }
+  constructor( 
+    private sliderService: UploadService
+  ) { }
 
   ngOnInit() {
-
+    this.heigthScreen = window.innerHeight * 1.1
+    this.sliderService.getAllUploads().subscribe({
+      next: ( res ) => {
+        this.items = res
+        setInterval(() => {}, 3000)
+        this.isLoading = false
+      }
+    })
   }
 
-  get data(): SliderItem[] {
-    return this.slidesService.getDataComunicados()
-  }
 
   onPauseButton() {
     this.isPaused = !this.isPaused
@@ -67,35 +71,7 @@ export class CarruselComponent {
   }
 
   beforeChange(e:any) {
-    if(this.data[e.nextSlide].ext === 'mp4'){
-   
-      const element = this.videoHTML.nativeElement;
-      const duration = 1000 * Math.floor(element.duration)
-      const btnPausar = this.btnPausar.nativeElement;
-      const btnPlay = this.btnPlay.nativeElement;
-      const btnNext = this.btnNext.nativeElement;
-      
-      element.play()
-      
-      btnPausar.click()
-      setTimeout(() => {
-        btnNext.click()
-        btnPlay.click()
-      }, duration)
-
-    }
+    
   }
 
-  getFileExtension(filename:string){
-    return filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
-  }
-
-  setFileExtension(){
-    this.data.forEach( (file:SliderItem) => {
-      if(file.ext !== "frame") {
-        file.ext = this.getFileExtension(file.item)
-      }
-    })
-
-  }
 }

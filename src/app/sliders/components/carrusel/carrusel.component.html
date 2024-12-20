@@ -1,4 +1,10 @@
+
 <div class="contenedor">
+
+    @if( isLoading ){
+        <shared-loader [screenHeight]="heigthScreen"></shared-loader>
+      }    
+
     <div class="flex justify-content-center conf-btn z-5">
         <p-button 
             icon="pi pi-pause" 
@@ -31,29 +37,16 @@
     (init)="slickInit($event)"
     (breakpoint)="breakpoint($event)"
     (beforeChange)="beforeChange($event)">
-        <div ngxSlickItem *ngFor="let slide of data" class="slide">
+        <div ngxSlickItem *ngFor="let item of items" class="slide">
         <img
-            *ngIf="slide.ext !== 'mp4'; else videoFormat"
-            src="../../../assets/img/{{ slide.item }}"
-            alt=""
+            [src]="item.staticUrl"
+            [alt]="item.name"
             width="100%"
+            class="img-fluid"
             >
-        <ng-template #videoFormat>
-            <video
-            #video
-            src="../../../assets/img/{{ slide.item }}"
-            controls
-            width="100%">
-            </video>
-        </ng-template>
         </div>
     </ngx-slick-carousel>
-
   
-    <!-- @if( isLoading ){
-      <shared-loader></shared-loader>
-    } -->
-  
-  </div>
+</div>
 
 
